@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HomeCarePilot M1 - What your home needs this month</title>
+  <meta name="description" content="Tell us about your home and get a plain-English maintenance checklist for this month.">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a class="brand" href="#tool"><i data-lucide="home"></i>HomeCarePilot <span class="brand-badge">M1</span></a>
+      <div class="nav-links">
+        <button class="nav-link" data-scroll="tool">Tool</button>
+        <button class="nav-link" data-scroll="results">Checklist</button>
+        <button class="nav-link" data-scroll="email">Save</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="m1-note"><i data-lucide="flask-conical"></i> First prototype. No account needed.</div>
+    <div class="tool-layout">
+      <section class="intro">
+        <h1>Know exactly what your home needs <span>this month.</span></h1>
+        <p>Answer a few questions and get a plain-English maintenance checklist with clear steps, time, cost, and safety notes.</p>
+        <div class="trust-row">
+          <span class="trust-pill"><i data-lucide="circle-check"></i> Plain language</span>
+          <span class="trust-pill"><i data-lucide="shield-check"></i> Safety-first</span>
+          <span class="trust-pill"><i data-lucide="calendar-clock"></i> Monthly tasks</span>
+        </div>
+      </section>
+      <section class="tool-card" id="tool">
+        <h2>Build my monthly checklist</h2>
+        <p class="sub">We use the current month: <strong id="monthLabel"></strong></p>
+        <div class="field-grid">
+          <div class="field">
+            <label for="homeType">Home type</label>
+            <select id="homeType">
+              <option value="house">House</option>
+              <option value="apartment">Apartment</option>
+              <option value="condo">Condo</option>
+              <option value="townhouse">Townhouse</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="homeAge">Home age</label>
+            <select id="homeAge">
+              <option value="newer">0-10 years</option>
+              <option value="mid">10-25 years</option>
+              <option value="older">25+ years</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="state">State</label>
+            <select id="state"><option value="">Select your state</option></select>
+          </div>
+        </div>
+        <button class="primary-btn" id="buildBtn"><i data-lucide="sparkles"></i> Get my checklist</button>
+      </section>
+    </div>
+
+    <section class="results" id="results" aria-live="polite">
+      <div class="results-head">
+        <div>
+          <h2>This month</h2>
+          <div class="results-meta" id="resultsMeta"></div>
+        </div>
+        <div class="action-row">
+          <button class="secondary-btn" id="printBtn"><i data-lucide="printer"></i> Print / PDF</button>
+          <button class="secondary-btn" id="resetBtn"><i data-lucide="rotate-ccw"></i> Start over</button>
+        </div>
+      </div>
+      <div class="task-list" id="taskList"></div>
+      <section class="email-card" id="email">
+        <h3>Save this plan for later</h3>
+        <p>We'll use this to keep the checklist up to date as the season changes.</p>
+        <form class="email-form" id="emailForm">
+          <input type="email" id="emailInput" placeholder="you@example.com" required>
+          <button type="submit">Save plan</button>
+        </form>
+        <div class="form-msg" id="emailMsg"></div>
+      </section>
+    </section>
+  </main>
+  <footer>
+    <div class="footer-inner">
+      <span>HomeCarePilot M1 prototype</span>
+      <span>Not a substitute for manufacturer instructions or a licensed professional.</span>
+    </div>
+  </footer>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

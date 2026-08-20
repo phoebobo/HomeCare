@@ -1,0 +1,295 @@
+const states = [
+  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware",
+  "Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky",
+  "Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi",
+  "Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico",
+  "New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania",
+  "Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont",
+  "Virginia","Washington","West Virginia","Wisconsin","Wyoming"
+];
+const coldStates = new Set(["Alaska","Colorado","Idaho","Illinois","Indiana","Iowa","Maine","Massachusetts","Michigan","Minnesota","Montana","Nebraska","New Hampshire","New York","North Dakota","Ohio","Oregon","Pennsylvania","South Dakota","Vermont","Washington","Wisconsin","Wyoming"]);
+const hotStates = new Set(["Arizona","Arkansas","Florida","Georgia","Louisiana","Mississippi","Nevada","New Mexico","Oklahoma","South Carolina","Tennessee","Texas"]);
+const humidStates = new Set(["Alabama","Arkansas","Florida","Georgia","Hawaii","Louisiana","Mississippi","North Carolina","South Carolina","Texas"]);
+
+const tasks = {
+  monthly: [
+    {
+      id: "hvac-filter",
+      title: "Check or replace your HVAC filter",
+      why: "The filter is like a mask for your heating and cooling system. When it's clogged, air doesn't move well, so the system works harder and costs more.",
+      when: "Once a month. If you're not sure, check the manufacturer label.",
+      how: ["Turn off the system", "Find the filter slot", "Hold the filter up to light", "If you can't see through it, replace it", "Write the date on the new filter"],
+      duration: "5-10 minutes",
+      cost: "$5-$30",
+      skip: "Higher energy bills, weaker airflow, and earlier system breakdowns.",
+      pro: "If you can't find the filter or aren't sure how to turn off the system safely.",
+      note: "Filter size and change interval vary by system. Check the label or manual.",
+      tag: "all",
+      season: "all"
+    },
+    {
+      id: "smoke-alarm",
+      title: "Test smoke and CO alarms",
+      why: "Alarms only help when they actually work. A quick monthly test takes under a minute.",
+      when: "Once a month.",
+      how: ["Press the test button on each alarm", "Replace any alarm that doesn't beep", "Check the battery date if it uses a removable battery"],
+      duration: "5 minutes",
+      cost: "$0-$15",
+      skip: "You may not know an alarm is dead until it matters.",
+      pro: "If an alarm beeps constantly or you need hardwired help.",
+      note: "Follow the manufacturer's test and replacement instructions.",
+      tag: "all",
+      season: "all"
+    },
+    {
+      id: "under-sink-leaks",
+      title: "Look for leaks under sinks",
+      why: "Small leaks are cheap to fix now and expensive to fix later. Checking monthly helps you catch them early.",
+      when: "Once a month.",
+      how: ["Look under every sink with a flashlight", "Feel pipes, valves, and joints for dampness", "Check cabinets for stains, warping, or smell", "If you see a drip, note where it's coming from"],
+      duration: "10 minutes",
+      cost: "$0",
+      skip: "Water damage, mold, higher water bills, and cabinet repair.",
+      pro: "If you see water, hear running water, or can't find the shutoff valve.",
+      note: "Leak locations vary by plumbing layout.",
+      tag: "all",
+      season: "all"
+    }
+  ],
+  spring: [
+    {
+      id: "spring-gutters",
+      title: "Clear gutters and downspouts",
+      why: "Blocked gutters send water where it shouldn't go, which can damage the roof, siding, and foundation.",
+      when: "At least twice a year. Spring is one of the best times.",
+      how: ["Use a sturdy ladder or hire a pro", "Remove leaves and debris", "Run water through the downspout", "Check for sagging sections"],
+      duration: "1-3 hours",
+      cost: "$0-$200",
+      skip: "Roof leaks, foundation damage, and water stains.",
+      pro: "If you're uncomfortable on a ladder or have a multi-story roof.",
+      note: "Gutter access and roof height vary by home.",
+      tag: "home",
+      season: "spring"
+    },
+    {
+      id: "ac-check",
+      title: "Clean around your AC unit",
+      why: "Outdoor units need air to work. Leaves, grass, and dirt block airflow and make the system work harder.",
+      when: "Before hot weather starts.",
+      how: ["Turn off power at the breaker", "Remove leaves and debris", "Trim plants at least 2 feet away", "Straighten any bent fins gently"],
+      duration: "20-45 minutes",
+      cost: "$0-$30",
+      skip: "Lower cooling efficiency and higher energy bills.",
+      pro: "If you see oil, smell refrigerant, or need to open the unit.",
+      note: "Only clean the outside of the unit. Leave refrigerant work to a pro.",
+      tag: "home",
+      season: "spring"
+    },
+    {
+      id: "outdoor-faucets",
+      title: "Turn on and check outdoor faucets",
+      why: "After winter, a frozen or damaged outdoor faucet can leak and waste water.",
+      when: "Early spring.",
+      how: ["Open the faucet slowly", "Check for leaks at the handle and wall", "Attach a hose and run water for a minute", "Close it firmly"],
+      duration: "10 minutes",
+      cost: "$0",
+      skip: "Hidden leaks and higher water bills.",
+      pro: "If water leaks inside the wall or the faucet won't shut off.",
+      note: "Some homes have a separate shutoff for outdoor water.",
+      tag: "home",
+      season: "spring"
+    }
+  ],
+  summer: [
+    {
+      id: "dryer-vent",
+      title: "Check the dryer vent",
+      why: "A blocked dryer vent is a fire risk and makes drying take longer.",
+      when: "Once or twice a year. Summer is a good reminder.",
+      how: ["Unplug the dryer", "Pull the vent away from the wall", "Remove visible lint", "Check the outdoor flap opens and closes", "Reconnect everything"],
+      duration: "20-40 minutes",
+      cost: "$0-$25",
+      skip: "Longer drying time, higher energy use, and a serious fire risk.",
+      pro: "If the vent is long, damaged, or you're not comfortable moving the dryer.",
+      note: "Vent length and setup vary by laundry room.",
+      tag: "all",
+      season: "summer"
+    },
+    {
+      id: "attic-roof",
+      title: "Look for roof and attic warning signs",
+      why: "Catching a small roof problem early is much cheaper than fixing water damage later.",
+      when: "During summer, on a clear day.",
+      how: ["Look at the roof from the ground", "Check for missing, lifted, or stained shingles", "If safe, look in the attic for dark spots or daylight", "Note any sagging areas"],
+      duration: "15 minutes",
+      cost: "$0",
+      skip: "Water damage, mold, and bigger roof repairs.",
+      pro: "If you see stains, daylight through the roof, or sagging. Don't walk on a damaged roof.",
+      note: "Roof style and age vary by home.",
+      tag: "home",
+      season: "summer"
+    }
+  ],
+  fall: [
+    {
+      id: "fall-gutters",
+      title: "Clear gutters before winter",
+      why: "Gutters full of leaves cause ice dams and water damage in cold months.",
+      when: "Late fall, after most leaves have fallen.",
+      how: ["Use a sturdy ladder or hire a pro", "Remove leaves and debris", "Flush downspouts with water", "Check brackets and seams"],
+      duration: "1-3 hours",
+      cost: "$0-$200",
+      skip: "Ice dams, roof leaks, and foundation water damage.",
+      pro: "If you're uncomfortable on a ladder or have a multi-story roof.",
+      note: "Gutter access and roof height vary by home.",
+      tag: "home",
+      season: "fall"
+    },
+    {
+      id: "heating-check",
+      title: "Prepare your heating system",
+      why: "You don't want to discover a heating problem on the coldest night.",
+      when: "Before cold weather arrives.",
+      how: ["Replace the filter if it's dirty", "Clear space around the furnace", "Check for odd smells or sounds", "Confirm the thermostat works"],
+      duration: "15-30 minutes",
+      cost: "$0-$40",
+      skip: "Cold home, higher heating bills, and emergency repairs.",
+      pro: "If you smell gas, see flames that look wrong, or haven't had a professional tune-up recently.",
+      note: "Furnace type and service intervals vary.",
+      tag: "all",
+      season: "fall"
+    },
+    {
+      id: "winterize-faucets",
+      title: "Protect outdoor faucets for winter",
+      why: "Water left in outdoor pipes can freeze, expand, and cause leaks.",
+      when: "Before the first freeze.",
+      how: ["Turn off the outdoor water supply if it has one", "Open the outdoor faucet to drain it", "Leave it open slightly", "Remove and store garden hoses"],
+      duration: "10 minutes",
+      cost: "$0-$15",
+      skip: "Frozen pipes, burst lines, and water damage.",
+      pro: "If you can't find the shutoff or aren't sure how to drain the system.",
+      note: "Some climates don't need this. Check your local freeze risk.",
+      tag: "home",
+      season: "fall"
+    }
+  ],
+  winter: [
+    {
+      id: "freeze-check",
+      title: "Check exposed pipes for drafts",
+      why: "Cold air can freeze water in exposed pipes. That's a small fix until the pipe bursts.",
+      when: "During the coldest months.",
+      how: ["Look for pipes in unheated areas", "Feel around them for cold air", "Add foam pipe insulation if needed", "Open cabinet doors under sinks on very cold nights"],
+      duration: "15-45 minutes",
+      cost: "$0-$20",
+      skip: "Frozen pipes, water damage, and emergency plumbing calls.",
+      pro: "If a pipe is already frozen or you can't safely access it.",
+      note: "Not every home has exposed pipes. This matters most in cold climates.",
+      tag: "home",
+      season: "winter"
+    },
+    {
+      id: "heating-filter-winter",
+      title: "Replace the filter during heavy heating season",
+      why: "A dirty filter makes your heating system work harder and can cause it to overheat.",
+      when: "Monthly during heavy use.",
+      how: ["Turn off the system", "Remove the old filter", "Check the size on the frame", "Install the new filter facing the same direction", "Note the date"],
+      duration: "5-10 minutes",
+      cost: "$5-$30",
+      skip: "Higher heating bills and a more likely breakdown.",
+      pro: "If you can't locate the filter or the system looks damaged.",
+      note: "Filter intervals vary by system and manufacturer.",
+      tag: "all",
+      season: "winter"
+    }
+  ],
+  older: [
+    {
+      id: "water-heater",
+      title: "Check the water heater for warning signs",
+      why: "Older water heaters are more likely to leak. A quick check can catch a problem before it floods a room.",
+      when: "Monthly for homes with older water heaters.",
+      how: ["Look around the tank for water", "Check the temperature and pressure valve area", "Listen for unusual sounds", "Note the age of the unit"],
+      duration: "10 minutes",
+      cost: "$0",
+      skip: "Flooding, rust, and a bigger replacement bill.",
+      pro: "If you see water, rust, or hear popping and banging.",
+      note: "Water heater lifespan varies. Check the label for the install year.",
+      tag: "age",
+      season: "all"
+    },
+    {
+      id: "drafts",
+      title: "Look for drafts around windows and doors",
+      why: "Old homes leak air. Sealing drafts saves money and makes rooms more comfortable.",
+      when: "Once per season.",
+      how: ["Hold your hand near window and door edges", "Look for gaps in weatherstripping", "Add caulk or weatherstripping where needed", "Check door sweeps"],
+      duration: "30-60 minutes",
+      cost: "$5-$60",
+      skip: "Drafty rooms, higher utility bills, and more wear on HVAC.",
+      pro: "If you need to remove trim or suspect structural issues.",
+      note: "Draft locations vary by home and window type.",
+      tag: "age",
+      season: "all"
+    },
+    {
+      id: "shutoffs",
+      title: "Test main plumbing shutoffs",
+      why: "If a pipe bursts, you need to know exactly how to stop the water.",
+      when: "Once or twice a year.",
+      how: ["Find the main water shutoff", "Locate shutoffs for sinks and toilets", "Turn each valve gently to make sure it moves", "If safe, test with a small bucket"],
+      duration: "15 minutes",
+      cost: "$0",
+      skip: "You may not be able to stop water quickly during an emergency.",
+      pro: "If a valve won't turn or leaks.",
+      note: "Shutoff locations vary by home.",
+      tag: "age",
+      season: "all"
+    }
+  ],
+  climate: [
+    {
+      id: "cold-insulation",
+      title: "Add pipe insulation in cold climates",
+      why: "Cold states are the most likely to see frozen pipes during winter.",
+      when: "Before the first freeze.",
+      how: ["Find exposed pipes in unheated spaces", "Measure pipe diameter", "Wrap with foam pipe insulation", "Secure with tape"],
+      duration: "15-45 minutes",
+      cost: "$10-$30",
+      skip: "Frozen and burst pipes.",
+      pro: "If pipes run through walls and can't be safely accessed.",
+      note: "This applies to cold-weather states.",
+      tag: "climate",
+      season: "winter"
+    },
+    {
+      id: "humid-mold",
+      title: "Check for humidity and mold signs",
+      why: "In humid states, moisture can quietly lead to mold and musty smells.",
+      when: "Monthly during humid months.",
+      how: ["Look in bathrooms, closets, and behind furniture", "Check for musty smells", "Wipe visible condensation", "Keep exhaust fans running during and after showers"],
+      duration: "10 minutes",
+      cost: "$0",
+      skip: "Mold growth, odors, and allergy symptoms.",
+      pro: "If you see a large patch of mold or can't find the moisture source.",
+      note: "This applies to humid and coastal climates.",
+      tag: "climate",
+      season: "all"
+    },
+    {
+      id: "hot-ac",
+      title: "Check AC filters more often in hot states",
+      why: "Hot states run cooling more, so filters clog faster.",
+      when: "Every 2-3 weeks during peak cooling season.",
+      how: ["Turn off the system", "Remove the filter", "Hold it up to light", "Replace if clogged", "Write the date"],
+      duration: "5-10 minutes",
+      cost: "$5-$30",
+      skip: "Higher cooling bills and a strained system.",
+      pro: "If the system struggles even with a clean filter.",
+      note: "This applies to hot and humid climates.",
+      tag: "climate",
+      season: "summer"
+    }
+  ]
+};
