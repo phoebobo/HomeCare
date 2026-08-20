@@ -98,6 +98,34 @@ const tasks = {
       note: "Some homes have a separate shutoff for outdoor water.",
       tag: "home",
       season: "spring"
+    },
+    {
+      id: "fridge-coils",
+      title: "Clean refrigerator coils",
+      why: "Dust on the coils makes the fridge work harder, use more energy, and wear out sooner.",
+      when: "Once or twice a year. Spring is a good reminder.",
+      how: ["Unplug the fridge", "Find the coils behind or under the unit", "Vacuum dust carefully", "Move the fridge back into place and plug it back in"],
+      duration: "20-40 minutes",
+      cost: "$0",
+      skip: "Higher energy use, warmer food, and a shorter fridge life.",
+      pro: "If the fridge is built in, hard to move, or you see refrigerant lines.",
+      note: "Coil location varies by fridge model.",
+      tag: "home",
+      season: "spring"
+    },
+    {
+      id: "sump-pump",
+      title: "Test the sump pump",
+      why: "A sump pump that doesn't work when it should can leave a basement with standing water.",
+      when: "Before the wet season starts.",
+      how: ["Check the power cord and outlet", "Pour a bucket of water into the sump pit", "Make sure the pump turns on and drains", "Listen for unusual sounds"],
+      duration: "10-20 minutes",
+      cost: "$0",
+      skip: "Basement flooding and water damage.",
+      pro: "If the pump doesn't turn on, runs constantly, or smells burnt.",
+      note: "Not every home has a sump pump.",
+      tag: "home",
+      season: "spring"
     }
   ],
   summer: [
@@ -126,6 +154,34 @@ const tasks = {
       skip: "Water damage, mold, and bigger roof repairs.",
       pro: "If you see stains, daylight through the roof, or sagging. Don't walk on a damaged roof.",
       note: "Roof style and age vary by home.",
+      tag: "home",
+      season: "summer"
+    },
+    {
+      id: "garage-reverse",
+      title: "Test the garage door auto-reverse",
+      why: "A garage door that doesn't reverse can be a serious safety hazard for kids, pets, and vehicles.",
+      when: "At least once or twice a year. Summer is a good reminder.",
+      how: ["Place a small object under the door", "Press close", "Watch that the door reverses when it touches the object", "Repeat on both sides"],
+      duration: "10 minutes",
+      cost: "$0",
+      skip: "A serious injury risk and a damaged door.",
+      pro: "If the door doesn't reverse or makes grinding sounds.",
+      note: "Not every home has an automatic garage door.",
+      tag: "home",
+      season: "summer"
+    },
+    {
+      id: "window-screens",
+      title: "Inspect window screens and seals",
+      why: "Damaged screens let in bugs and make windows less comfortable and less efficient.",
+      when: "Early summer.",
+      how: ["Check each screen for holes or rust", "Look for gaps in the window seal", "Patch small holes or replace damaged screens", "Test that windows open and close easily"],
+      duration: "30-60 minutes",
+      cost: "$0-$30",
+      skip: "Bugs, drafts, and higher cooling costs.",
+      pro: "If a window frame is damaged or the glass is cracked.",
+      note: "Screen size and window style vary by home.",
       tag: "home",
       season: "summer"
     }
@@ -172,6 +228,34 @@ const tasks = {
       note: "Some climates don't need this. Check your local freeze risk.",
       tag: "home",
       season: "fall"
+    },
+    {
+      id: "exterior-caulk",
+      title: "Check exterior caulk and paint",
+      why: "Gaps in caulk and paint let water into the home, which can cause rot and costly repairs.",
+      when: "In fall, before wet and cold weather arrives.",
+      how: ["Walk around the outside of the home", "Look for cracked or missing caulk", "Look for peeling paint near trim and doors", "Fill small gaps with exterior caulk"],
+      duration: "30-60 minutes",
+      cost: "$0-$50",
+      skip: "Water damage, rot, and more expensive repairs later.",
+      pro: "If damage is high, structural, or hard to reach safely.",
+      note: "Not every home has the same exterior materials.",
+      tag: "home",
+      season: "fall"
+    },
+    {
+      id: "emergency-kit",
+      title: "Check your emergency kit",
+      why: "Storms and power outages are easier to handle when you know what you have and what's expired.",
+      when: "At the start of each season.",
+      how: ["Find your emergency kit", "Check batteries, water, and food dates", "Replace expired items", "Note what you need to add"],
+      duration: "15-30 minutes",
+      cost: "$0-$30",
+      skip: "Being unprepared during a power outage or storm.",
+      pro: "If you need help building a kit for your household.",
+      note: "Kit contents depend on your household and climate.",
+      tag: "all",
+      season: "fall"
     }
   ],
   winter: [
@@ -200,6 +284,20 @@ const tasks = {
       skip: "Higher heating bills and a more likely breakdown.",
       pro: "If you can't locate the filter or the system looks damaged.",
       note: "Filter intervals vary by system and manufacturer.",
+      tag: "all",
+      season: "winter"
+    },
+    {
+      id: "humidifier-clean",
+      title: "Clean your humidifier",
+      why: "A dirty humidifier can spread mold and make indoor air worse instead of better.",
+      when: "Monthly during heavy winter use.",
+      how: ["Unplug the unit", "Remove the water tank and filter", "Rinse and clean with the manufacturer's instructions", "Let it dry before reassembling"],
+      duration: "10-20 minutes",
+      cost: "$0-$20",
+      skip: "Mold, odors, and worse indoor air.",
+      pro: "If you can't clean the internal parts or see heavy buildup.",
+      note: "Not every home uses a humidifier.",
       tag: "all",
       season: "winter"
     }
