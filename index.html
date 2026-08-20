@@ -33,7 +33,7 @@
       </section>
       <section class="tool-card" id="tool">
         <h2>Build my monthly checklist</h2>
-        <p class="sub">We use the current month: <strong id="monthLabel"></strong></p>
+        <p class="sub">Choose a month to see the right seasonal tasks.</p>
         <div class="field-grid">
           <div class="field">
             <label for="homeType">Home type</label>
@@ -53,6 +53,10 @@
             </select>
           </div>
           <div class="field full">
+            <label for="monthSelect">Month</label>
+            <select id="monthSelect"></select>
+          </div>
+          <div class="field full">
             <label for="state">State</label>
             <select id="state"><option value="">Select your state</option></select>
           </div>
@@ -66,6 +70,10 @@
         <div>
           <h2>This month</h2>
           <div class="results-meta" id="resultsMeta"></div>
+          <div class="progress-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+            <span id="progressText">0 / 0 done</span>
+          </div>
         </div>
         <div class="action-row">
           <button class="secondary-btn" id="printBtn"><i data-lucide="printer"></i> Print / PDF</button>
