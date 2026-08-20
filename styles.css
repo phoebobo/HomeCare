@@ -82,6 +82,11 @@ select:focus, input:focus { outline: 2px solid #9fd0bd; border-color: var(--acce
 footer { border-top: 1px solid var(--line); background: var(--surface); padding: 24px 22px; }
 .footer-inner { max-width: 1180px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; }
 .empty-state { background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius); padding: 34px; text-align: center; color: var(--muted); font-size: 15px; }
+[data-icon] { display: inline-flex; }
+[data-icon] svg { width: 16px; height: 16px; }
+.brand [data-icon] svg { width: 20px; height: 20px; }
+.primary-btn [data-icon] svg { width: 18px; height: 18px; }
+.secondary-btn [data-icon] svg { width: 16px; height: 16px; }
 @media (max-width: 860px) {
   .tool-layout { grid-template-columns: 1fr; }
   .task-grid { grid-template-columns: 1fr; }
@@ -94,6 +99,23 @@ footer { border-top: 1px solid var(--line); background: var(--surface); padding:
 @media print {
   header, .tool-card, .email-card, .results-head .action-row, footer, .m1-note { display: none; }
   body { background: #fff; }
-  main { padding: 10px; }
-  .task-card { break-inside: avoid; border: 1px solid #ccc; }
+  main { padding: 8px; }
+  .results { margin-top: 0; }
+  .results-head { margin-bottom: 8px; }
+  .results-head h2 { font-size: 16px; margin: 0; }
+  .results-meta { font-size: 11px; }
+  .progress-wrap { display: none; }
+  .task-list { gap: 4px; }
+  .task-card { break-inside: avoid; border: 0; padding: 3px 0; }
+  .task-card.done { opacity: 1; }
+  .task-card.done .task-title { text-decoration: none; }
+  .task-top { gap: 6px; }
+  .check, .tag-row, .task-note { display: none; }
+  .task-title { font-size: 12px; margin: 0 0 1px; }
+  .task-grid { display: block; }
+  .task-grid .task-line { display: none; }
+  .task-line { display: none; font-size: 10px; color: #111; margin: 1px 0; }
+  .task-line strong { display: inline; font-size: 10px; color: #111; text-transform: none; letter-spacing: 0; }
+  .task-line.task-why, .task-line.task-when, .task-line.task-pro { display: block; }
+  .task-line.task-why strong, .task-line.task-when strong, .task-line.task-pro strong { font-weight: 700; }
 }
