@@ -119,13 +119,13 @@ function buildForMonth(profile, selectedMonth) {
 }
 
 function getDoneIds() {
-  return new Set(JSON.parse(localStorage.getItem('homecare_m1_done') || '[]'));
+  return new Set(JSON.parse(localStorage.getItem('homeupkeep_done') || '[]'));
 }
 
 function setDoneId(id, done) {
   const ids = getDoneIds();
   if (done) ids.add(id); else ids.delete(id);
-  localStorage.setItem('homecare_m1_done', JSON.stringify([...ids]));
+  localStorage.setItem('homeupkeep_done', JSON.stringify([...ids]));
 }
 
 function formatCost(cost) {
@@ -236,17 +236,17 @@ function renderYearGrid() {
 
 function saveCurrentHome() {
   const profile = currentProfile();
-  const homes = JSON.parse(localStorage.getItem('homecare_homes') || '[]');
+  const homes = JSON.parse(localStorage.getItem('homeupkeep_homes') || '[]');
   const idx = homes.findIndex(h => h.name === profile.name);
   if (idx >= 0) homes[idx] = profile; else homes.push(profile);
-  localStorage.setItem('homecare_homes', JSON.stringify(homes));
+  localStorage.setItem('homeupkeep_homes', JSON.stringify(homes));
   const btn = document.getElementById('saveHomeBtn');
   btn.textContent = 'Saved';
   setTimeout(() => btn.textContent = 'Save home', 1200);
 }
 
 function renderRecords() {
-  const records = JSON.parse(localStorage.getItem('homecare_records') || '[]');
+  const records = JSON.parse(localStorage.getItem('homeupkeep_records') || '[]');
   const list = document.getElementById('recordList');
   list.innerHTML = '';
   if (!records.length) {
@@ -272,9 +272,9 @@ function enableReminders() {
   }
   Notification.requestPermission().then(permission => {
     if (permission === 'granted') {
-      localStorage.setItem('homecare_reminders', 'on');
+      localStorage.setItem('homeupkeep_reminders', 'on');
       document.getElementById('reminderStatus').textContent = 'Reminders enabled. A test reminder was sent.';
-      new Notification('HomeCare', { body: 'Your monthly home checklist is ready.' });
+      new Notification('HomeUpkeep', { body: 'Your monthly home checklist is ready.' });
     } else {
       document.getElementById('reminderStatus').textContent = 'Notifications are blocked in this browser.';
     }
@@ -291,7 +291,7 @@ function downloadBlob(filename, blob) {
 
 function exportHomeProfile() {
   const profile = currentProfile();
-  downloadBlob('homecare-profile.json', new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' }));
+  downloadBlob('homeupkeep-profile.json', new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' }));
 }
 
 function importHomeProfile(file) {
@@ -317,7 +317,7 @@ function importHomeProfile(file) {
 function downloadIcs() {
   const profile = currentProfile();
   const year = new Date().getFullYear();
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HomeCare//M5//EN', 'CALSCALE:GREGORIAN'];
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HomeUpkeep//EN', 'CALSCALE:GREGORIAN'];
   monthNames.forEach((name, i) => {
     const tasksForMonth = buildForMonth(profile, i);
     const date = new Date(Date.UTC(year, i, 1, 9, 0, 0));
@@ -325,17 +325,17 @@ function downloadIcs() {
     tasksForMonth.forEach(task => {
       const safeTitle = task.title.replace(/[;,]/g, '');
       lines.push('BEGIN:VEVENT');
-      lines.push('UID:' + task.id + '@homecarepilot');
+      lines.push('UID:' + task.id + '@homeupkeeppilot');
       lines.push('DTSTAMP:' + stamp);
       lines.push('DTSTART:' + stamp);
       lines.push('DTEND:' + stamp);
-      lines.push('SUMMARY:HomeCare - ' + safeTitle);
+      lines.push('SUMMARY:HomeUpkeep - ' + safeTitle);
       lines.push('DESCRIPTION:' + task.why.replace(/[;,]/g, ''));
       lines.push('END:VEVENT');
     });
   });
   lines.push('END:VCALENDAR');
-  downloadBlob('homecare-reminders.ics', new Blob([lines.join('\r\n')], { type: 'text/calendar' }));
+  downloadBlob('homeupkeep-reminders.ics', new Blob([lines.join('\r\n')], { type: 'text/calendar' }));
 }
 
 function downloadCsv() {
@@ -346,7 +346,7 @@ function downloadCsv() {
       rows.push([name, task.title, task.why, task.when, task.duration, formatCost(task.cost)]);
     });
   });
-  const records = JSON.parse(localStorage.getItem('homecare_records') || '[]');
+  const records = JSON.parse(localStorage.getItem('homeupkeep_records') || '[]');
   if (records.length) {
     rows.push([]);
     rows.push(['Record date','Task or service','Cost','Notes']);
@@ -356,7 +356,7 @@ function downloadCsv() {
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'homecare-plan.csv';
+  a.download = 'homeupkeep-plan.csv';
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -387,27 +387,26 @@ document.getElementById('emailForm').addEventListener('submit', e => {
   e.preventDefault();
   const email = document.getElementById('emailInput').value.trim();
   if (!email) return;
-  const saved = JSON.parse(localStorage.getItem('homecare_m1_emails') || '[]');
+  const saved = JSON.parse(localStorage.getItem('homeupkeep_emails') || '[]');
   if (!saved.includes(email)) saved.push(email);
-  localStorage.setItem('homecare_m1_emails', JSON.stringify(saved));
+  localStorage.setItem('homeupkeep_emails', JSON.stringify(saved));
   document.getElementById('emailMsg').textContent = 'Saved on this device. Email delivery connects in production.';
   document.getElementById('emailInput').value = '';
 });
 document.getElementById('reminderBtn').addEventListener('click', enableReminders);
 document.getElementById('recordForm').addEventListener('submit', e => {
   e.preventDefault();
-  const records = JSON.parse(localStorage.getItem('homecare_records') || '[]');
+  const records = JSON.parse(localStorage.getItem('homeupkeep_records') || '[]');
   records.push({
     date: document.getElementById('recordDate').value,
     task: document.getElementById('recordTask').value.trim(),
     cost: document.getElementById('recordCost').value,
     notes: document.getElementById('recordNotes').value.trim()
   });
-  localStorage.setItem('homecare_records', JSON.stringify(records));
+  localStorage.setItem('homeupkeep_records', JSON.stringify(records));
   document.getElementById('recordForm').reset();
   renderRecords();
 });
-document.querySelectorAll('[data-upgrade]').forEach(btn => btn.addEventListener('click', () => { document.getElementById('pricingNote').textContent = 'Production checkout will open here with Stripe or Paddle.'; }));
 document.getElementById('exportCsvBtn').addEventListener('click', downloadCsv);
 document.getElementById('exportIcsBtn').addEventListener('click', downloadIcs);
 document.getElementById('exportHomeBtn').addEventListener('click', exportHomeProfile);

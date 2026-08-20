@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "wrangler": "^4.124.0"
+  },
+  "scripts": {
+    "deploy": "wrangler pages deploy",
+    "preview": "wrangler dev"
+  },
+  "name": "homeupkeep"
+}

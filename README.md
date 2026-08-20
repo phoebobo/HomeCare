@@ -1,6 +1,6 @@
-# HomeCare M5
+# HomeUpkeep
 
-Full prototype: personalized home maintenance planning for US, UK, and European homes.
+Personalized home maintenance planning for US, UK, and European homes. Free to use.
 
 ## Features
 
@@ -16,7 +16,7 @@ Full prototype: personalized home maintenance planning for US, UK, and European 
 
 ## Run locally
 
-Open `index.html` in a browser. No server or build step is required.
+Open `public/index.html` in a browser. No server or build step is required.
 
 ## Files
 
@@ -27,4 +27,4 @@ Open `index.html` in a browser. No server or build step is required.
 
 ## Production notes
 
-This prototype stores data locally. Production M5 needs accounts, backend sync, email reminders, payments, and multi-region content review.
+This version stores data locally in the browser. Subscriptions are not enabled yet. Production needs accounts, backend sync, email reminders, and payments.
