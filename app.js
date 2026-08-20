@@ -9,7 +9,8 @@ const iconPaths = {
   rotate: '<path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/>',
   save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
   bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
-  download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/>'
+  download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 8l5-5 5 5M12 3v12"/>'
 };
 document.querySelectorAll('[data-icon]').forEach(el => {
   const name = el.getAttribute('data-icon');
@@ -143,6 +144,7 @@ function taskCard(task, selected) {
   card.className = 'task-card';
   const tagClass = task.tag === 'home' ? 'tag-home' : (task.tag === 'age' || task.tag === 'climate') ? 'tag-season' : 'tag-all';
   const tagText = task.tag === 'home' ? 'Home type' : task.tag === 'age' ? 'Home age' : task.tag === 'climate' ? 'Climate' : 'Monthly';
+  const marketNote = marketSelect.value === 'UK' ? 'UK note: check local supplier guidance and metric units.' : marketSelect.value === 'EU' ? 'EU note: check local manufacturer guidance and metric units.' : '';
   card.innerHTML = `
     <div class="task-top">
       <input class="check" type="checkbox" aria-label="Mark done">
@@ -158,7 +160,7 @@ function taskCard(task, selected) {
           <div class="task-line task-skip"><strong>If you skip it</strong>${task.skip}</div>
         </div>
         <div class="task-line task-pro"><strong>Call a pro when</strong>${task.pro}</div>
-        <div class="task-note">${task.note}</div>
+        <div class="task-note">${task.note}${marketNote ? " " + marketNote : ""}</div>
       </div>
     </div>
   `;
@@ -277,6 +279,63 @@ function enableReminders() {
   });
 }
 
+function downloadBlob(filename, blob) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportHomeProfile() {
+  const profile = currentProfile();
+  downloadBlob('homecare-profile.json', new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' }));
+}
+
+function importHomeProfile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const profile = JSON.parse(reader.result);
+      if (!profile.market || !regionOptions[profile.market] || !profile.type || !profile.age) throw new Error('invalid');
+      document.getElementById('homeName').value = profile.name || '';
+      document.getElementById('marketSelect').value = profile.market;
+      fillRegionOptions();
+      document.getElementById('regionSelect').value = regionOptions[profile.market].includes(profile.region) ? profile.region : regionOptions[profile.market][0];
+      document.getElementById('homeType').value = profile.type;
+      document.getElementById('homeAge').value = profile.age;
+      buildChecklist();
+    } catch (error) {
+      document.getElementById('resultsMeta').textContent = 'Import failed: invalid home profile.';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function downloadIcs() {
+  const profile = currentProfile();
+  const year = new Date().getFullYear();
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HomeCarePilot//M5//EN', 'CALSCALE:GREGORIAN'];
+  monthNames.forEach((name, i) => {
+    const tasksForMonth = buildForMonth(profile, i);
+    const date = new Date(Date.UTC(year, i, 1, 9, 0, 0));
+    const stamp = date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    tasksForMonth.forEach(task => {
+      const safeTitle = task.title.replace(/[;,]/g, '');
+      lines.push('BEGIN:VEVENT');
+      lines.push('UID:' + task.id + '@homecarepilot');
+      lines.push('DTSTAMP:' + stamp);
+      lines.push('DTSTART:' + stamp);
+      lines.push('DTEND:' + stamp);
+      lines.push('SUMMARY:HomeCarePilot - ' + safeTitle);
+      lines.push('DESCRIPTION:' + task.why.replace(/[;,]/g, ''));
+      lines.push('END:VEVENT');
+    });
+  });
+  lines.push('END:VCALENDAR');
+  downloadBlob('homecare-reminders.ics', new Blob([lines.join('\r\n')], { type: 'text/calendar' }));
+}
+
 function downloadCsv() {
   const profile = currentProfile();
   const rows = [['Month','Task','Why','When','Time','Cost']];
@@ -347,6 +406,10 @@ document.getElementById('recordForm').addEventListener('submit', e => {
   renderRecords();
 });
 document.getElementById('exportCsvBtn').addEventListener('click', downloadCsv);
+document.getElementById('exportIcsBtn').addEventListener('click', downloadIcs);
+document.getElementById('exportHomeBtn').addEventListener('click', exportHomeProfile);
+document.getElementById('importHomeBtn').addEventListener('click', () => document.getElementById('importHomeInput').click());
+document.getElementById('importHomeInput').addEventListener('change', e => { if (e.target.files[0]) importHomeProfile(e.target.files[0]); e.target.value = ''; });
 document.getElementById('printFullBtn').addEventListener('click', () => {
   document.body.classList.add('print-full');
   window.print();
