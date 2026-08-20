@@ -272,7 +272,7 @@ function enableReminders() {
     if (permission === 'granted') {
       localStorage.setItem('homecare_reminders', 'on');
       document.getElementById('reminderStatus').textContent = 'Reminders enabled. A test reminder was sent.';
-      new Notification('HomeCarePilot', { body: 'Your monthly home checklist is ready.' });
+      new Notification('HomeCare', { body: 'Your monthly home checklist is ready.' });
     } else {
       document.getElementById('reminderStatus').textContent = 'Notifications are blocked in this browser.';
     }
@@ -315,7 +315,7 @@ function importHomeProfile(file) {
 function downloadIcs() {
   const profile = currentProfile();
   const year = new Date().getFullYear();
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HomeCarePilot//M5//EN', 'CALSCALE:GREGORIAN'];
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HomeCare//M5//EN', 'CALSCALE:GREGORIAN'];
   monthNames.forEach((name, i) => {
     const tasksForMonth = buildForMonth(profile, i);
     const date = new Date(Date.UTC(year, i, 1, 9, 0, 0));
@@ -327,7 +327,7 @@ function downloadIcs() {
       lines.push('DTSTAMP:' + stamp);
       lines.push('DTSTART:' + stamp);
       lines.push('DTEND:' + stamp);
-      lines.push('SUMMARY:HomeCarePilot - ' + safeTitle);
+      lines.push('SUMMARY:HomeCare - ' + safeTitle);
       lines.push('DESCRIPTION:' + task.why.replace(/[;,]/g, ''));
       lines.push('END:VEVENT');
     });
@@ -405,6 +405,7 @@ document.getElementById('recordForm').addEventListener('submit', e => {
   document.getElementById('recordForm').reset();
   renderRecords();
 });
+document.querySelectorAll('[data-upgrade]').forEach(btn => btn.addEventListener('click', () => { document.getElementById('pricingNote').textContent = 'Production checkout will open here with Stripe or Paddle.'; }));
 document.getElementById('exportCsvBtn').addEventListener('click', downloadCsv);
 document.getElementById('exportIcsBtn').addEventListener('click', downloadIcs);
 document.getElementById('exportHomeBtn').addEventListener('click', exportHomeProfile);
