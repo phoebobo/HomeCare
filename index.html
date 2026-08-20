@@ -3,38 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HomeCarePilot M1 - What your home needs this month</title>
-  <meta name="description" content="Tell us about your home and get a plain-English maintenance checklist for this month.">
+  <title>HomeCarePilot M5 - Home maintenance made simple</title>
+  <meta name="description" content="Build a personalized home maintenance plan, track tasks, and export your checklist.">
   <link rel="stylesheet" href="styles.css">
-  
 </head>
 <body>
   <header>
     <div class="nav">
-      <a class="brand" href="#tool"><span data-icon="home"></span>HomeCarePilot <span class="brand-badge">M1</span></a>
+      <a class="brand" href="#tool"><span data-icon="home"></span>HomeCarePilot <span class="brand-badge">M5</span></a>
       <div class="nav-links">
         <button class="nav-link" data-scroll="tool">Tool</button>
         <button class="nav-link" data-scroll="results">Checklist</button>
-        <button class="nav-link" data-scroll="email">Save</button>
+        <button class="nav-link" data-scroll="fullYear">Full Year</button>
+        <button class="nav-link" data-scroll="records">Records</button>
+        <button class="nav-link" data-scroll="export">Export</button>
       </div>
     </div>
   </header>
   <main>
-    <div class="m1-note"><span data-icon="flask"></span> First prototype. No account needed.</div>
+    <div class="m1-note"><span data-icon="flask"></span> Full prototype. Data is stored locally in your browser.</div>
     <div class="tool-layout">
       <section class="intro">
-        <h1>Know exactly what your home needs <span>this month.</span></h1>
-        <p>Answer a few questions and get a plain-English maintenance checklist with clear steps, time, cost, and safety notes.</p>
+        <h1>Know exactly what your home needs <span>all year.</span></h1>
+        <p>Pick a market, enter your home, and get a personalized maintenance plan with plain-English task cards.</p>
         <div class="trust-row">
           <span class="trust-pill"><span data-icon="check-circle"></span> Plain language</span>
           <span class="trust-pill"><span data-icon="shield"></span> Safety-first</span>
-          <span class="trust-pill"><span data-icon="calendar"></span> Monthly tasks</span>
+          <span class="trust-pill"><span data-icon="calendar"></span> Full-year plan</span>
         </div>
       </section>
       <section class="tool-card" id="tool">
-        <h2>Build my monthly checklist</h2>
-        <p class="sub">Choose a month to see the right seasonal tasks.</p>
+        <h2>Build my home plan</h2>
+        <p class="sub">Choose a month to see seasonal tasks, or open Full Year below.</p>
         <div class="field-grid">
+          <div class="field">
+            <label for="marketSelect">Market</label>
+            <select id="marketSelect">
+              <option value="US">United States</option>
+              <option value="UK">United Kingdom</option>
+              <option value="EU">Europe</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="regionSelect">State / Region</label>
+            <select id="regionSelect"></select>
+          </div>
+          <div class="field">
+            <label for="homeName">Home name</label>
+            <input id="homeName" type="text" placeholder="e.g. My house" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="monthSelect">Month</label>
+            <select id="monthSelect"></select>
+          </div>
           <div class="field">
             <label for="homeType">Home type</label>
             <select id="homeType">
@@ -42,6 +63,7 @@
               <option value="apartment">Apartment</option>
               <option value="condo">Condo</option>
               <option value="townhouse">Townhouse</option>
+              <option value="mobile">Mobile home</option>
             </select>
           </div>
           <div class="field">
@@ -52,16 +74,11 @@
               <option value="older">25+ years</option>
             </select>
           </div>
-          <div class="field full">
-            <label for="monthSelect">Month</label>
-            <select id="monthSelect"></select>
-          </div>
-          <div class="field full">
-            <label for="state">State</label>
-            <select id="state"><option value="">Select your state</option></select>
-          </div>
         </div>
-        <button class="primary-btn" id="buildBtn"><span data-icon="sparkles"></span> Get my checklist</button>
+        <div class="button-row">
+          <button class="primary-btn" id="buildBtn"><span data-icon="sparkles"></span> Get my checklist</button>
+          <button class="secondary-btn" id="saveHomeBtn"><span data-icon="save"></span> Save home</button>
+        </div>
       </section>
     </div>
 
@@ -91,10 +108,52 @@
         <div class="form-msg" id="emailMsg"></div>
       </section>
     </section>
+
+    <section class="content-section" id="fullYear">
+      <div class="section-head">
+        <div>
+          <h2>Full year plan</h2>
+          <p class="section-sub">Every month's tasks for this home, with local checkboxes.</p>
+        </div>
+        <button class="secondary-btn" id="reminderBtn"><span data-icon="bell"></span> Enable reminders</button>
+      </div>
+      <div class="reminder-status" id="reminderStatus"></div>
+      <div class="year-grid" id="yearGrid"></div>
+    </section>
+
+    <section class="content-section" id="records">
+      <div class="section-head">
+        <div>
+          <h2>Maintenance records</h2>
+          <p class="section-sub">Track service dates, costs, and notes for this home.</p>
+        </div>
+      </div>
+      <form class="record-form" id="recordForm">
+        <input id="recordDate" type="date" required>
+        <input id="recordTask" type="text" placeholder="Task or service" required>
+        <input id="recordCost" type="number" min="0" step="0.01" placeholder="Cost" required>
+        <input id="recordNotes" type="text" placeholder="Notes">
+        <button type="submit">Add record</button>
+      </form>
+      <div class="record-list" id="recordList"></div>
+    </section>
+
+    <section class="content-section" id="export">
+      <div class="section-head">
+        <div>
+          <h2>Export</h2>
+          <p class="section-sub">Download your plan and maintenance history.</p>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="secondary-btn" id="exportCsvBtn"><span data-icon="download"></span> Download CSV</button>
+        <button class="secondary-btn" id="printFullBtn"><span data-icon="printer"></span> Print full report</button>
+      </div>
+    </section>
   </main>
   <footer>
     <div class="footer-inner">
-      <span>HomeCarePilot M1 prototype</span>
+      <span>HomeCarePilot M5 prototype</span>
       <span>Not a substitute for manufacturer instructions or a licensed professional.</span>
     </div>
   </footer>
