@@ -6,12 +6,12 @@
   <title>HomeCarePilot M1 - What your home needs this month</title>
   <meta name="description" content="Tell us about your home and get a plain-English maintenance checklist for this month.">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  
 </head>
 <body>
   <header>
     <div class="nav">
-      <a class="brand" href="#tool"><i data-lucide="home"></i>HomeCarePilot <span class="brand-badge">M1</span></a>
+      <a class="brand" href="#tool"><span data-icon="home"></span>HomeCarePilot <span class="brand-badge">M1</span></a>
       <div class="nav-links">
         <button class="nav-link" data-scroll="tool">Tool</button>
         <button class="nav-link" data-scroll="results">Checklist</button>
@@ -20,15 +20,15 @@
     </div>
   </header>
   <main>
-    <div class="m1-note"><i data-lucide="flask-conical"></i> First prototype. No account needed.</div>
+    <div class="m1-note"><span data-icon="flask"></span> First prototype. No account needed.</div>
     <div class="tool-layout">
       <section class="intro">
         <h1>Know exactly what your home needs <span>this month.</span></h1>
         <p>Answer a few questions and get a plain-English maintenance checklist with clear steps, time, cost, and safety notes.</p>
         <div class="trust-row">
-          <span class="trust-pill"><i data-lucide="circle-check"></i> Plain language</span>
-          <span class="trust-pill"><i data-lucide="shield-check"></i> Safety-first</span>
-          <span class="trust-pill"><i data-lucide="calendar-clock"></i> Monthly tasks</span>
+          <span class="trust-pill"><span data-icon="check-circle"></span> Plain language</span>
+          <span class="trust-pill"><span data-icon="shield"></span> Safety-first</span>
+          <span class="trust-pill"><span data-icon="calendar"></span> Monthly tasks</span>
         </div>
       </section>
       <section class="tool-card" id="tool">
@@ -61,7 +61,7 @@
             <select id="state"><option value="">Select your state</option></select>
           </div>
         </div>
-        <button class="primary-btn" id="buildBtn"><i data-lucide="sparkles"></i> Get my checklist</button>
+        <button class="primary-btn" id="buildBtn"><span data-icon="sparkles"></span> Get my checklist</button>
       </section>
     </div>
 
@@ -76,8 +76,8 @@
           </div>
         </div>
         <div class="action-row">
-          <button class="secondary-btn" id="printBtn"><i data-lucide="printer"></i> Print / PDF</button>
-          <button class="secondary-btn" id="resetBtn"><i data-lucide="rotate-ccw"></i> Start over</button>
+          <button class="secondary-btn" id="printBtn"><span data-icon="printer"></span> Print / PDF</button>
+          <button class="secondary-btn" id="resetBtn"><span data-icon="rotate"></span> Start over</button>
         </div>
       </div>
       <div class="task-list" id="taskList"></div>
