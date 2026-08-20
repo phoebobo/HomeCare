@@ -3,19 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HomeCarePilot M5 - Home maintenance made simple</title>
+  <title>HomeCare M5 - Home maintenance made simple</title>
   <meta name="description" content="Build a personalized home maintenance plan, track tasks, and export your checklist.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
     <div class="nav">
-      <a class="brand" href="#tool"><span data-icon="home"></span>HomeCarePilot <span class="brand-badge">M5</span></a>
+      <a class="brand" href="#tool"><span data-icon="home"></span>HomeCare <span class="brand-badge">M5</span></a>
       <div class="nav-links">
         <button class="nav-link" data-scroll="tool">Tool</button>
         <button class="nav-link" data-scroll="results">Checklist</button>
         <button class="nav-link" data-scroll="fullYear">Full Year</button>
         <button class="nav-link" data-scroll="records">Records</button>
+        <button class="nav-link" data-scroll="pricing">Pricing</button>
         <button class="nav-link" data-scroll="export">Export</button>
       </div>
     </div>
@@ -138,6 +139,52 @@
       <div class="record-list" id="recordList"></div>
     </section>
 
+    <section class="content-section" id="pricing">
+      <div class="section-head">
+        <div>
+          <h2>Pricing</h2>
+          <p class="section-sub">A simple plan that pays for itself by avoiding one repair bill.</p>
+        </div>
+      </div>
+      <div class="pricing-grid">
+        <article class="plan-card">
+          <h3>Free</h3>
+          <div class="plan-price">$0</div>
+          <ul class="plan-features">
+            <li>1 home</li>
+            <li>Current month checklist</li>
+            <li>Printable PDF</li>
+            <li>Local reminders</li>
+          </ul>
+          <button class="plan-button current" disabled>Current plan</button>
+        </article>
+        <article class="plan-card featured">
+          <h3>Pro</h3>
+          <div class="plan-price">$6.99<span>/month</span></div>
+          <ul class="plan-features">
+            <li>Multiple homes</li>
+            <li>Full-year plan</li>
+            <li>Email and calendar reminders</li>
+            <li>Maintenance records</li>
+            <li>CSV and calendar export</li>
+          </ul>
+          <button class="plan-button" data-upgrade="pro">Upgrade</button>
+        </article>
+        <article class="plan-card">
+          <h3>Family</h3>
+          <div class="plan-price">$9.99<span>/month</span></div>
+          <ul class="plan-features">
+            <li>Everything in Pro</li>
+            <li>5 family members</li>
+            <li>Shared maintenance history</li>
+            <li>Shared export</li>
+          </ul>
+          <button class="plan-button" data-upgrade="family">Upgrade</button>
+        </article>
+      </div>
+      <div class="pricing-note" id="pricingNote">Payment connects in production with Stripe or Paddle.</div>
+    </section>
+
     <section class="content-section" id="export">
       <div class="section-head">
         <div>
@@ -157,7 +204,7 @@
   </main>
   <footer>
     <div class="footer-inner">
-      <span>HomeCarePilot M5 prototype</span>
+      <span>HomeCare M5 prototype</span>
       <span>Not a substitute for manufacturer instructions or a licensed professional.</span>
     </div>
   </footer>
