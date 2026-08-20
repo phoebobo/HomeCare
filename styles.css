@@ -68,6 +68,10 @@ select:focus, input:focus { outline: 2px solid #9fd0bd; border-color: var(--acce
 .task-line { font-size: 14px; color: var(--muted); }
 .task-line strong { color: var(--ink); display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
 .task-note { margin-top: 12px; border-left: 3px solid var(--amber); background: #fdf8ec; padding: 10px 12px; border-radius: 8px; font-size: 13px; color: #65501b; }
+.progress-wrap { display: flex; align-items: center; gap: 10px; margin-top: 10px; max-width: 340px; }
+.progress-bar { height: 8px; border-radius: 999px; background: var(--line); flex: 1; overflow: hidden; }
+.progress-bar span { display: block; height: 100%; background: var(--accent); border-radius: 999px; width: 0%; transition: width 0.2s; }
+#progressText { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
 .email-card { margin-top: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
 .email-card h3 { margin: 0 0 6px; font-size: 20px; letter-spacing: 0; }
 .email-card p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
