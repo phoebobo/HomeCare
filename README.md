@@ -1,6 +1,18 @@
-# HomeCarePilot M1
+# HomeCarePilot M5
 
-M1 prototype: a plain-English monthly home maintenance checklist.
+Full prototype: personalized home maintenance planning for US, UK, and European homes.
+
+## Features
+
+- Market switch: United States, United Kingdom, Europe
+- Home profiles saved in the browser
+- Monthly and full-year maintenance plans
+- Plain-English task cards
+- Progress tracking
+- Local notifications/reminders
+- Maintenance records
+- CSV export
+- Print / PDF with portrait layout
 
 ## Run locally
 
@@ -9,10 +21,10 @@ Open `index.html` in a browser. No server or build step is required.
 ## Files
 
 - `index.html` - page structure
-- `styles.css` - layout and responsive styles
-- `data.js` - state, climate, and maintenance task data
-- `app.js` - checklist generation and interactions
+- `styles.css` - layout, responsive styles, print layout
+- `data.js` - task data
+- `app.js` - plan generation, records, export, reminders, market logic
 
-## Next
+## Production notes
 
-M2 will add accounts, full-year plans, reminders, and completion history.
+This prototype stores data locally. Production M5 needs accounts, backend sync, email reminders, payments, and multi-region content review.
