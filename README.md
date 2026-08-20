@@ -1,4 +1,4 @@
-# HomeCarePilot M5
+# HomeCare M5
 
 Full prototype: personalized home maintenance planning for US, UK, and European homes.
 
