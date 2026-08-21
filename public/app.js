@@ -12,7 +12,11 @@ const iconPaths = {
   'file-text': '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/>',
   bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
   download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/>',
-  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 8l5-5 5 5M12 3v12"/>'
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 8l5-5 5 5M12 3v12"/>',
+  gauge: '<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M12 12l4-4"/><path d="M8.5 15.5a4 4 0 0 1 0-7"/><path d="M12 7V5"/><path d="M12 12V8"/>',
+  dollar: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10"/><path d="M15 9.5c-.4-1-1.7-1.5-3-1.5-1.7 0-3 .8-3 2s1 1.6 3 2 3 .8 3 2-1.3 2-3 2c-1.3 0-2.6-.5-3-1.5"/>',
+  wrench: '<path d="M14.7 6.3a5 5 0 0 0-6.7 6.2L3 17.6V21h3.4l5.1-5a5 5 0 0 0 6.2-6.7l-2.9 2.9-2.8-.6-.6-2.8z"/>',
+  phone: '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/>'
 };
 document.querySelectorAll('[data-icon]').forEach(el => {
   const name = el.getAttribute('data-icon');
@@ -155,6 +159,7 @@ function updateProgress(tasks, profile, selectedMonth) {
   const pct = tasks.length ? Math.round(count / tasks.length * 100) : 0;
   document.getElementById('progressBar').innerHTML = `<span style="width:${pct}%"></span>`;
   document.getElementById('progressText').textContent = `${count} / ${tasks.length} done`;
+  renderDashboard();
 }
 
 function taskCard(task, selected, profile, selectedMonth) {
@@ -221,6 +226,7 @@ function buildChecklist() {
   render(buildForMonth(profile, month), profile);
   renderYearGrid();
   renderRecords();
+  renderHomeLibrary();
 }
 
 function renderYearGrid() {
@@ -241,6 +247,7 @@ function renderYearGrid() {
       check.checked = getDoneIds(profile, i).has(task.id);
       check.addEventListener('change', () => {
         setDoneId(task.id, check.checked, profile, i);
+        renderDashboard();
       });
       const title = document.createElement('span');
       title.textContent = task.title;
@@ -279,6 +286,7 @@ function loadSavedHome(name) {
   buildChecklist();
   renderYearGrid();
   renderRecords();
+  renderHomeLibrary();
 }
 
 function saveCurrentHome() {
@@ -311,6 +319,121 @@ function renderRecords() {
     row.children[3].textContent = record.notes || '';
     list.appendChild(row);
   });
+  renderDashboard();
+}
+
+
+function formatNumberCost(value) {
+  const n = Number(value) || 0;
+  const currency = markets[marketSelect.value].currency;
+  return currency + n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
+function renderDashboard() {
+  const profile = currentProfile();
+  const tasksForMonth = buildForMonth(profile, month);
+  const records = JSON.parse(localStorage.getItem(recordKey(profile)) || '[]');
+  const done = getDoneIds(profile, month).size;
+  const completion = tasksForMonth.length ? Math.round(done / tasksForMonth.length * 100) : 0;
+  const recordBonus = Math.min(30, records.length * 3);
+  const score = tasksForMonth.length ? Math.min(100, Math.round(completion * 0.75 + recordBonus)) : 0;
+  document.getElementById('scoreValue').textContent = score + ' / 100';
+  document.getElementById('doneValue').textContent = done + ' / ' + tasksForMonth.length;
+  document.getElementById('recordValue').textContent = String(records.length);
+  const totalCost = records.reduce((sum, r) => sum + Number(r.cost || 0), 0);
+  document.getElementById('costValue').textContent = formatNumberCost(totalCost);
+}
+
+function itemKey(profile) {
+  return 'homeupkeep_items_' + profileKey(profile);
+}
+
+function providerKey(profile) {
+  return 'homeupkeep_providers_' + profileKey(profile);
+}
+
+function warrantyStatus(value) {
+  if (!value) return { label: 'No expiry', cls: 'status-ok' };
+  const parts = value.split('-').map(Number);
+  const now = new Date();
+  const expiry = new Date(parts[0], parts[1] - 1, 1);
+  const months = (expiry.getFullYear() - now.getFullYear()) * 12 + (expiry.getMonth() - now.getMonth());
+  if (months < 0) return { label: 'Expired', cls: 'status-expired' };
+  if (months <= 3) return { label: 'Expiring soon', cls: 'status-warn' };
+  return { label: 'Active', cls: 'status-ok' };
+}
+
+function renderHomeLibrary() {
+  const profile = currentProfile();
+  const items = JSON.parse(localStorage.getItem(itemKey(profile)) || '[]');
+  const itemList = document.getElementById('itemList');
+  itemList.innerHTML = '';
+  if (!items.length) {
+    itemList.innerHTML = '<div class="library-empty">No appliances tracked yet.</div>';
+  } else {
+    items.slice().reverse().forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'library-item';
+      const info = document.createElement('div');
+      const title = document.createElement('strong');
+      title.textContent = item.name;
+      info.appendChild(title);
+      const sub = document.createElement('small');
+      sub.textContent = [item.model, item.warranty].filter(Boolean).join(' · ');
+      info.appendChild(sub);
+      const status = warrantyStatus(item.warranty);
+      const meta = document.createElement('div');
+      meta.className = 'library-meta';
+      const badge = document.createElement('span');
+      badge.className = status.cls;
+      badge.textContent = status.label;
+      meta.appendChild(badge);
+      info.appendChild(meta);
+      const remove = document.createElement('button');
+      remove.className = 'delete-btn';
+      remove.type = 'button';
+      remove.textContent = 'Remove';
+      remove.addEventListener('click', () => {
+        const next = JSON.parse(localStorage.getItem(itemKey(profile)) || '[]').filter(x => x.id !== item.id);
+        localStorage.setItem(itemKey(profile), JSON.stringify(next));
+        renderHomeLibrary();
+      });
+      row.appendChild(info);
+      row.appendChild(remove);
+      itemList.appendChild(row);
+    });
+  }
+
+  const providers = JSON.parse(localStorage.getItem(providerKey(profile)) || '[]');
+  const providerList = document.getElementById('providerList');
+  providerList.innerHTML = '';
+  if (!providers.length) {
+    providerList.innerHTML = '<div class="library-empty">No service providers saved yet.</div>';
+  } else {
+    providers.slice().reverse().forEach(provider => {
+      const row = document.createElement('div');
+      row.className = 'library-item';
+      const info = document.createElement('div');
+      const title = document.createElement('strong');
+      title.textContent = provider.name;
+      info.appendChild(title);
+      const sub = document.createElement('small');
+      sub.textContent = [provider.type, provider.phone].filter(Boolean).join(' · ');
+      info.appendChild(sub);
+      const remove = document.createElement('button');
+      remove.className = 'delete-btn';
+      remove.type = 'button';
+      remove.textContent = 'Remove';
+      remove.addEventListener('click', () => {
+        const next = JSON.parse(localStorage.getItem(providerKey(profile)) || '[]').filter(x => x.id !== provider.id);
+        localStorage.setItem(providerKey(profile), JSON.stringify(next));
+        renderHomeLibrary();
+      });
+      row.appendChild(info);
+      row.appendChild(remove);
+      providerList.appendChild(row);
+    });
+  }
 }
 
 function enableReminders() {
@@ -400,6 +523,18 @@ function downloadCsv() {
     rows.push(['Record date','Task or service','Cost','Notes']);
     records.forEach(r => rows.push([r.date, r.task, formatCost(r.cost), r.notes || '']));
   }
+  const items = JSON.parse(localStorage.getItem(itemKey(profile)) || '[]');
+  if (items.length) {
+    rows.push([]);
+    rows.push(['Item','Model','Warranty expiry']);
+    items.forEach(i => rows.push([i.name, i.model || '', i.warranty || '']));
+  }
+  const providers = JSON.parse(localStorage.getItem(providerKey(profile)) || '[]');
+  if (providers.length) {
+    rows.push([]);
+    rows.push(['Provider','Type','Phone']);
+    providers.forEach(p => rows.push([p.name, p.type || '', p.phone || '']));
+  }
   const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
@@ -432,6 +567,36 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('progressText').textContent = '0 / 0 done';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+document.getElementById('itemForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const profile = currentProfile();
+  const items = JSON.parse(localStorage.getItem(itemKey(profile)) || '[]');
+  items.push({
+    id: Date.now(),
+    name: document.getElementById('itemName').value.trim(),
+    model: document.getElementById('itemModel').value.trim(),
+    warranty: document.getElementById('itemWarranty').value
+  });
+  localStorage.setItem(itemKey(profile), JSON.stringify(items));
+  document.getElementById('itemForm').reset();
+  renderHomeLibrary();
+});
+
+document.getElementById('providerForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const profile = currentProfile();
+  const providers = JSON.parse(localStorage.getItem(providerKey(profile)) || '[]');
+  providers.push({
+    id: Date.now(),
+    name: document.getElementById('providerName').value.trim(),
+    phone: document.getElementById('providerPhone').value.trim(),
+    type: document.getElementById('providerType').value.trim()
+  });
+  localStorage.setItem(providerKey(profile), JSON.stringify(providers));
+  document.getElementById('providerForm').reset();
+  renderHomeLibrary();
+});
+
 document.getElementById('emailForm').addEventListener('submit', e => {
   e.preventDefault();
   const email = document.getElementById('emailInput').value.trim();
@@ -476,3 +641,5 @@ document.querySelectorAll('[data-scroll]').forEach(btn => {
 refreshSavedHomes();
 renderYearGrid();
 renderRecords();
+renderHomeLibrary();
+renderDashboard();
