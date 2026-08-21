@@ -118,14 +118,30 @@ function buildForMonth(profile, selectedMonth) {
   return ids.map(byId).filter(Boolean);
 }
 
-function getDoneIds() {
-  return new Set(JSON.parse(localStorage.getItem('homeupkeep_done') || '[]'));
+function profileKey(profile) {
+  return [profile.market, profile.region, profile.type, profile.age, profile.name || 'home']
+    .map(v => encodeURIComponent(String(v)))
+    .join('_');
 }
 
-function setDoneId(id, done) {
-  const ids = getDoneIds();
+function doneKey(profile, selectedMonth) {
+  return 'homeupkeep_done_' + profileKey(profile) + '_' + selectedMonth;
+}
+
+function recordKey(profile) {
+  return 'homeupkeep_records_' + profileKey(profile);
+}
+
+function getDoneIds(profile, selectedMonth) {
+  const key = profile ? doneKey(profile, selectedMonth) : 'homeupkeep_done_default';
+  return new Set(JSON.parse(localStorage.getItem(key) || '[]'));
+}
+
+function setDoneId(id, done, profile, selectedMonth) {
+  const key = profile ? doneKey(profile, selectedMonth) : 'homeupkeep_done_default';
+  const ids = new Set(JSON.parse(localStorage.getItem(key) || '[]'));
   if (done) ids.add(id); else ids.delete(id);
-  localStorage.setItem('homeupkeep_done', JSON.stringify([...ids]));
+  localStorage.setItem(key, JSON.stringify([...ids]));
 }
 
 function formatCost(cost) {
@@ -133,15 +149,15 @@ function formatCost(cost) {
   return cost.replace(/\$/g, currency);
 }
 
-function updateProgress(tasks) {
-  const done = getDoneIds();
+function updateProgress(tasks, profile, selectedMonth) {
+  const done = getDoneIds(profile, selectedMonth);
   const count = tasks.filter(t => done.has(t.id)).length;
   const pct = tasks.length ? Math.round(count / tasks.length * 100) : 0;
   document.getElementById('progressBar').innerHTML = `<span style="width:${pct}%"></span>`;
   document.getElementById('progressText').textContent = `${count} / ${tasks.length} done`;
 }
 
-function taskCard(task, selected) {
+function taskCard(task, selected, profile, selectedMonth) {
   const card = document.createElement('article');
   card.className = 'task-card';
   const tagClass = task.tag === 'home' ? 'tag-home' : (task.tag === 'age' || task.tag === 'climate') ? 'tag-season' : 'tag-all';
@@ -167,14 +183,14 @@ function taskCard(task, selected) {
     </div>
   `;
   const check = card.querySelector('.check');
-  const doneIds = getDoneIds();
+  const doneIds = getDoneIds(profile, selectedMonth);
   check.checked = doneIds.has(task.id);
   card.classList.toggle('done', check.checked);
   card.querySelector('.task-title').textContent = task.title;
   check.addEventListener('change', e => {
     card.classList.toggle('done', e.target.checked);
-    setDoneId(task.id, e.target.checked);
-    if (selected) updateProgress(selected);
+    setDoneId(task.id, e.target.checked, profile, selectedMonth);
+    if (selected) updateProgress(selected, profile, selectedMonth);
   });
   return card;
 }
@@ -188,11 +204,11 @@ function render(selected, profile) {
   list.innerHTML = '';
   if (!selected.length) {
     list.innerHTML = '<div class="empty-state">No tasks found for this combination yet. Try a different market or home type.</div>';
-    updateProgress([]);
+    updateProgress([], profile, month);
     return;
   }
-  selected.forEach(task => list.appendChild(taskCard(task, selected)));
-  updateProgress(selected);
+  selected.forEach(task => list.appendChild(taskCard(task, selected, profile, month)));
+  updateProgress(selected, profile, month);
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -203,6 +219,8 @@ function buildChecklist() {
     return;
   }
   render(buildForMonth(profile, month), profile);
+  renderYearGrid();
+  renderRecords();
 }
 
 function renderYearGrid() {
@@ -220,9 +238,9 @@ function renderYearGrid() {
       row.className = 'year-task';
       const check = document.createElement('input');
       check.type = 'checkbox';
-      check.checked = getDoneIds().has(task.id);
+      check.checked = getDoneIds(profile, i).has(task.id);
       check.addEventListener('change', () => {
-        setDoneId(task.id, check.checked);
+        setDoneId(task.id, check.checked, profile, i);
       });
       const title = document.createElement('span');
       title.textContent = task.title;
@@ -234,19 +252,49 @@ function renderYearGrid() {
   });
 }
 
+function refreshSavedHomes() {
+  const select = document.getElementById('savedHomes');
+  const current = document.getElementById('homeName').value.trim();
+  const homes = JSON.parse(localStorage.getItem('homeupkeep_homes') || '[]');
+  select.innerHTML = '<option value="">New home</option>';
+  homes.forEach(h => {
+    const opt = document.createElement('option');
+    opt.value = h.name;
+    opt.textContent = h.name;
+    select.appendChild(opt);
+  });
+  if (current) select.value = current;
+}
+
+function loadSavedHome(name) {
+  const homes = JSON.parse(localStorage.getItem('homeupkeep_homes') || '[]');
+  const h = homes.find(x => x.name === name);
+  if (!h) return;
+  document.getElementById('homeName').value = h.name;
+  document.getElementById('marketSelect').value = h.market;
+  fillRegionOptions();
+  document.getElementById('regionSelect').value = regionOptions[h.market].includes(h.region) ? h.region : regionOptions[h.market][0];
+  document.getElementById('homeType').value = h.type;
+  document.getElementById('homeAge').value = h.age;
+  buildChecklist();
+  renderYearGrid();
+  renderRecords();
+}
+
 function saveCurrentHome() {
   const profile = currentProfile();
   const homes = JSON.parse(localStorage.getItem('homeupkeep_homes') || '[]');
   const idx = homes.findIndex(h => h.name === profile.name);
   if (idx >= 0) homes[idx] = profile; else homes.push(profile);
   localStorage.setItem('homeupkeep_homes', JSON.stringify(homes));
+  refreshSavedHomes();
   const btn = document.getElementById('saveHomeBtn');
   btn.textContent = 'Saved';
   setTimeout(() => btn.textContent = 'Save home', 1200);
 }
 
 function renderRecords() {
-  const records = JSON.parse(localStorage.getItem('homeupkeep_records') || '[]');
+  const records = JSON.parse(localStorage.getItem(recordKey(currentProfile())) || '[]');
   const list = document.getElementById('recordList');
   list.innerHTML = '';
   if (!records.length) {
@@ -346,7 +394,7 @@ function downloadCsv() {
       rows.push([name, task.title, task.why, task.when, task.duration, formatCost(task.cost)]);
     });
   });
-  const records = JSON.parse(localStorage.getItem('homeupkeep_records') || '[]');
+  const records = JSON.parse(localStorage.getItem(recordKey(profile)) || '[]');
   if (records.length) {
     rows.push([]);
     rows.push(['Record date','Task or service','Cost','Notes']);
@@ -375,6 +423,7 @@ monthSelect.addEventListener('change', () => {
 });
 document.getElementById('buildBtn').addEventListener('click', buildChecklist);
 document.getElementById('saveHomeBtn').addEventListener('click', saveCurrentHome);
+document.getElementById('savedHomes').addEventListener('change', e => { if (e.target.value) loadSavedHome(e.target.value); });
 document.getElementById('printBtn').addEventListener('click', () => window.print());
 document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('taskList').innerHTML = '';
@@ -396,14 +445,15 @@ document.getElementById('emailForm').addEventListener('submit', e => {
 document.getElementById('reminderBtn').addEventListener('click', enableReminders);
 document.getElementById('recordForm').addEventListener('submit', e => {
   e.preventDefault();
-  const records = JSON.parse(localStorage.getItem('homeupkeep_records') || '[]');
+  const profile = currentProfile();
+  const records = JSON.parse(localStorage.getItem(recordKey(profile)) || '[]');
   records.push({
     date: document.getElementById('recordDate').value,
     task: document.getElementById('recordTask').value.trim(),
     cost: document.getElementById('recordCost').value,
     notes: document.getElementById('recordNotes').value.trim()
   });
-  localStorage.setItem('homeupkeep_records', JSON.stringify(records));
+  localStorage.setItem(recordKey(profile), JSON.stringify(records));
   document.getElementById('recordForm').reset();
   renderRecords();
 });
@@ -423,5 +473,6 @@ document.querySelectorAll('[data-scroll]').forEach(btn => {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+refreshSavedHomes();
 renderYearGrid();
 renderRecords();
