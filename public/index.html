@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HomeUpkeep - Home maintenance made simple</title>
-  <meta name="description" content="Build a personalized home maintenance plan, track tasks, and export your checklist.">
+  <title>HomeUpkeep - Home maintenance plan, reminders, and records</title>
+  <meta name="description" content="Build a personalized home maintenance plan, track tasks, warranties, service providers, costs, and export your records.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,18 +14,51 @@
       <div class="nav-links">
         <button class="nav-link" data-scroll="tool">Tool</button>
         <button class="nav-link" data-scroll="value">Value</button>
+        <button class="nav-link" data-scroll="capabilities">Features</button>
         <button class="nav-link" data-scroll="results">Checklist</button>
         <button class="nav-link" data-scroll="fullYear">Full Year</button>
         <button class="nav-link" data-scroll="records">Records</button>
+        <button class="nav-link" data-scroll="library">Library</button>
         <button class="nav-link" data-scroll="export">Export</button>
       </div>
     </div>
   </header>
   <main>
     <div class="proto-note"><span data-icon="flask"></span> Free tool — your data stays in your browser.</div>
+<section class="page-hero" id="top">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">A 10-minute plan for your whole house</p>
+          <h1>Know exactly what your home needs <span>all year.</span></h1>
+          <p class="hero-lead">Enter your home once. HomeUpkeep turns monthly upkeep, seasonal checks, and repair risk into one plain-English checklist.</p>
+          <div class="hero-actions">
+            <button class="primary-btn" data-scroll="tool"><span data-icon="sparkles"></span> Build my free plan</button>
+            <button class="ghost-btn" data-scroll="capabilities">See what you get</button>
+          </div>
+          <div class="trust-row">
+            <span class="trust-pill"><span data-icon="check-circle"></span> Plain language</span>
+            <span class="trust-pill"><span data-icon="shield"></span> Safety-first</span>
+            <span class="trust-pill"><span data-icon="calendar"></span> Full-year plan</span>
+            <span class="trust-pill"><span data-icon="save"></span> Stays on your device</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="HomeUpkeep product preview">
+          <img src="images/dashboard-preview.png" alt="HomeUpkeep October maintenance dashboard showing due tasks and progress" width="1120" height="538" loading="eager">
+          <div class="hero-float hero-float-top">
+            <span class="float-icon" data-icon="bell"></span>
+            <div><strong>Up next</strong><small>Test smoke alarms · 5 min</small></div>
+          </div>
+          <div class="hero-float hero-float-bottom">
+            <span class="float-icon" data-icon="gauge"></span>
+            <div><strong>Home score 92</strong><small>Small checks before big bills</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <div class="tool-layout">
       <section class="intro">
-        <h1>Know exactly what your home needs <span>all year.</span></h1>
+        <h2 class="intro-title">Know exactly what your home needs <span>all year.</span></h2>
         <p>Pick a market, enter your home, and get a personalized maintenance plan with plain-English task cards.</p>
         <div class="trust-row">
           <span class="trust-pill"><span data-icon="check-circle"></span> Plain language</span>
@@ -87,6 +120,33 @@
       </section>
     </div>
 
+    <section class="dashboard-section" id="dashboard">
+      <div class="section-head">
+        <div>
+          <h2>Your home at a glance</h2>
+          <p class="section-sub">Progress, records, and tracked costs update as you use the tool.</p>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <article class="stat-card">
+          <span class="value-icon" data-icon="gauge"></span>
+          <div><strong id="scoreValue">--</strong><span>Home health score</span></div>
+        </article>
+        <article class="stat-card">
+          <span class="value-icon" data-icon="check-circle"></span>
+          <div><strong id="doneValue">0</strong><span>Tasks done this month</span></div>
+        </article>
+        <article class="stat-card">
+          <span class="value-icon" data-icon="file-text"></span>
+          <div><strong id="recordValue">0</strong><span>Service records</span></div>
+        </article>
+        <article class="stat-card">
+          <span class="value-icon" data-icon="dollar"></span>
+          <div><strong id="costValue">$0</strong><span>Costs tracked</span></div>
+        </article>
+      </div>
+    </section>
+
     <section class="value-section" id="value">
       <div class="value-main">
         <div class="value-copy">
@@ -121,6 +181,54 @@
           <span class="value-icon"><span data-icon="file-text"></span></span>
           <h3>Keep the record</h3>
           <p>Maintenance history when you need it.</p>
+        </article>
+      </div>
+      <div class="value-showcase">
+        <img src="images/dashboard-preview-mobile.png" alt="HomeUpkeep maintenance checklist on a mobile phone" width="760" height="558" loading="eager">
+        <div class="showcase-copy">
+          <strong>One clear checklist, not 50 browser tabs.</strong>
+          <span>See what is due this month, mark it done, and keep the history for next season.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="capability-section" id="capabilities">
+      <div class="section-head">
+        <div>
+          <h2>Everything a serious home log should do</h2>
+          <p class="section-sub">Not just a checklist. Your home's maintenance memory lives in one place.</p>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span class="value-icon" data-icon="calendar"></span>
+          <h3>Full-year plan</h3>
+          <p>Personalized by market, region, home type, and age.</p>
+        </article>
+        <article class="feature-card">
+          <span class="value-icon" data-icon="bell"></span>
+          <h3>Reminders</h3>
+          <p>Browser notifications plus an .ics calendar you can import.</p>
+        </article>
+        <article class="feature-card">
+          <span class="value-icon" data-icon="home"></span>
+          <h3>Multiple homes</h3>
+          <p>Save and switch between houses, rentals, and condos.</p>
+        </article>
+        <article class="feature-card">
+          <span class="value-icon" data-icon="file-text"></span>
+          <h3>Records & costs</h3>
+          <p>Track service dates, costs, and notes for each home.</p>
+        </article>
+        <article class="feature-card">
+          <span class="value-icon" data-icon="wrench"></span>
+          <h3>Home library</h3>
+          <p>Keep appliances, warranties, and trusted pros nearby.</p>
+        </article>
+        <article class="feature-card">
+          <span class="value-icon" data-icon="download"></span>
+          <h3>Export & PDF</h3>
+          <p>Download CSV, calendar reminders, home backups, and reports.</p>
         </article>
       </div>
     </section>
@@ -182,6 +290,43 @@
     </section>
 
     
+
+    <section class="content-section library-section" id="library">
+      <div class="section-head">
+        <div>
+          <h2>Home library</h2>
+          <p class="section-sub">Track appliances, warranties, and service providers for this home.</p>
+        </div>
+      </div>
+      <div class="library-grid">
+        <div class="library-panel">
+          <div class="library-head">
+            <h3>Appliances & warranties</h3>
+            <span data-icon="wrench"></span>
+          </div>
+          <form class="stack-form" id="itemForm">
+            <input id="itemName" type="text" placeholder="e.g. HVAC system" required autocomplete="off">
+            <input id="itemModel" type="text" placeholder="Brand / model" autocomplete="off">
+            <input id="itemWarranty" type="month" aria-label="Warranty expiry">
+            <button type="submit"><span data-icon="save"></span> Add item</button>
+          </form>
+          <div class="library-list" id="itemList"></div>
+        </div>
+        <div class="library-panel">
+          <div class="library-head">
+            <h3>Service providers</h3>
+            <span data-icon="phone"></span>
+          </div>
+          <form class="stack-form" id="providerForm">
+            <input id="providerName" type="text" placeholder="e.g. Jackson Plumbing" required autocomplete="off">
+            <input id="providerPhone" type="tel" placeholder="Phone" autocomplete="off">
+            <input id="providerType" type="text" placeholder="Type, e.g. HVAC" autocomplete="off">
+            <button type="submit"><span data-icon="save"></span> Add provider</button>
+          </form>
+          <div class="library-list" id="providerList"></div>
+        </div>
+      </div>
+    </section>
 
     <section class="content-section" id="export">
       <div class="section-head">
