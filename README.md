@@ -11,7 +11,11 @@ Personalized home maintenance planning for US, UK, and European homes. Free to u
 - Progress tracking
 - Local notifications/reminders
 - Maintenance records
-- CSV export
+- Home health score and tracked costs
+- Appliance and warranty library
+- Service provider directory
+- CSV export (plans, records, warranties, providers)
+- ICS calendar reminders
 - Print / PDF with portrait layout
 
 ## Run locally
